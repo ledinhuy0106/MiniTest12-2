@@ -27,7 +27,10 @@ public class ProductServlet extends HttpServlet {
                 showListOrderByName(request,response);
                 break;
                 case "edit":
-                showListOrderByName(request,response);
+                showEditForm(request,response);
+                break;
+                case "delete":
+                showEditForm(request,response);
                 break;
             case "create":
                 showCreateForm(request, response);
@@ -35,6 +38,12 @@ public class ProductServlet extends HttpServlet {
             default:
                 showList(request, response);
         }
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher=request.getRequestDispatcher("product/pEdit.jsp");
+        requestDispatcher.forward(request,response);
+
     }
 
     private void showListOrderByName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -76,7 +85,20 @@ public class ProductServlet extends HttpServlet {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                break;
+            case "edit":
+                editProduct(request,response);
         }
+    }
+
+    private void editProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String name=request.getParameter("name");
+        int price = Integer.parseInt(request.getParameter("price"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        Product product=new Product(id,name,price,quantity);
+        productDAO.edit(id,product);
+        response.sendRedirect("/products");
     }
 
     private void saveProduct(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {

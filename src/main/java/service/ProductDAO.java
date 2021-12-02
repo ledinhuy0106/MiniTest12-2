@@ -88,7 +88,16 @@ preparedStatement.setString(1,'%'+name1+'%');
 
     @Override
     public void edit(int id, Product product) {
-
+        try (
+                Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("update product set name=?,price=?,quantity=? where id=?");) {
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setInt(2, product.getPrice());
+            preparedStatement.setInt(3, product.getQuantity());
+            preparedStatement.setInt(4 ,id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+        }
     }
 
     @Override
