@@ -2,9 +2,8 @@ package service;
 
 import model.Product;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAO implements IProductDAO {
@@ -34,7 +33,23 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public List<Product> findAll() {
-        return null;
+       List<Product> products=new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from product");) {
+            System.out.println(preparedStatement);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                double price= rs.getDouble("price");
+                int quantity = rs.getInt("quantity");
+                products.add(new Product(id, name, price,quantity));
+            }
+        } catch (SQLException e) {
+        }
+        return products;
     }
 
     @Override
