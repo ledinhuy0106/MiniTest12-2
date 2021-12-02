@@ -11,11 +11,17 @@
 <head>
     <title>Title</title>
 </head>
-<body>
+<body align="center" >
 <h1>Danh sach</h1>
-<a href="/products?action=create">Create product</a>
+<form action="/products">
+    <input type="text" name="name" placeholder="Enter name">
+    <button>Search</button>
+</form>
+
+<a href="/products?action=create">Create product</a><br><br>
+<a href="/products?action=orderByQuantity">Oder By Quantity</a>
 <c:forEach items="${products}" var="product">
-  <h2>${product.id},${product.name},${product.price},${product.quantity}</h2>
+  <h2>${product.id},${product.name},${product.price},${product.quantity},<a href="/products?action=edit&id=${product.id}">Edit</a></h2>
 </c:forEach>
 </body>
 </html>

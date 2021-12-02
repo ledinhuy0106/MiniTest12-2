@@ -66,9 +66,25 @@ public class ProductDAO implements IProductDAO {
     }
 
     @Override
-    public List<Product> findByName(String name) {
-        return null;
+    public List<Product> findByName(String name1) {
+       List<Product> productList= new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from product where name like ?");) {
+preparedStatement.setString(1,'%'+name1+'%');
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int price= rs.getInt("price");
+                int quantity = rs.getInt("quantity");
+                productList.add(new Product(id, name, price,quantity));
+            }
+        } catch (SQLException e) {
+        }
+        return productList;
     }
+
 
     @Override
     public void edit(int id, Product product) {
@@ -82,7 +98,22 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public List<Product> sortByQuantity() {
-        return null;
+        List<Product> products=new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from product order by quantity");) {
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int price= rs.getInt("price");
+                int quantity = rs.getInt("quantity");
+                products.add(new Product(id, name, price,quantity));
+            }
+        } catch (SQLException e) {
+        }
+        return products;
     }
 
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "ProductServlet", urlPatterns = "/products")
@@ -22,11 +23,25 @@ public class ProductServlet extends HttpServlet {
             action = "";
         }
         switch (action) {
+            case "orderByQuantity":
+                showListOrderByName(request,response);
+                break;
+                case "edit":
+                showListOrderByName(request,response);
+                break;
             case "create":
                 showCreateForm(request, response);
+                break;
             default:
                 showList(request, response);
         }
+    }
+
+    private void showListOrderByName(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("product/pList.jsp");
+        List<Product> products = productDAO.sortByQuantity();
+        request.setAttribute("products", products);
+        requestDispatcher.forward(request, response);
     }
 
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,8 +50,15 @@ public class ProductServlet extends HttpServlet {
     }
 
     private void showList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String name = request.getParameter("name");
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("product/pList.jsp");
-        List<Product> products = productDAO.findAll();
+        List<Product> products = new ArrayList<>();
+        if(name==null){
+            products = productDAO.findAll();
+        }
+        else {
+            products =productDAO.findByName(name);
+        }
         request.setAttribute("products", products);
         requestDispatcher.forward(request, response);
     }
