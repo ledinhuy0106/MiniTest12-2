@@ -102,7 +102,13 @@ preparedStatement.setString(1,'%'+name1+'%');
 
     @Override
     public void delete(int id) {
-
+        try (
+                Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("delete from product where id = ?");) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate()
+        } catch (SQLException e) {
+        }
     }
 
     @Override

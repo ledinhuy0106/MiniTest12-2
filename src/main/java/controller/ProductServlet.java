@@ -30,7 +30,7 @@ public class ProductServlet extends HttpServlet {
                 showEditForm(request,response);
                 break;
                 case "delete":
-                showEditForm(request,response);
+                delete(request,response);
                 break;
             case "create":
                 showCreateForm(request, response);
@@ -38,6 +38,12 @@ public class ProductServlet extends HttpServlet {
             default:
                 showList(request, response);
         }
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        productDAO.delete(id);
+        response.sendRedirect("/products");
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
