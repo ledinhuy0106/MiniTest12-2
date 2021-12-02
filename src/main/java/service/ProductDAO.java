@@ -28,7 +28,16 @@ public class ProductDAO implements IProductDAO {
 
     @Override
     public void add(Product product) throws SQLException {
-
+        try (
+                Connection connection = getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("insert into product(id,name,price,quantity) values (?,?,?,?)");) {
+            preparedStatement.setInt(1, product.getId());
+            preparedStatement.setString(2, product.getName());
+            preparedStatement.setInt(3, product.getPrice());
+            preparedStatement.setInt(4, product.getQuantity());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+        }
     }
 
     @Override
@@ -36,14 +45,13 @@ public class ProductDAO implements IProductDAO {
        List<Product> products=new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("select * from product");) {
-            System.out.println(preparedStatement);
 
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                double price= rs.getDouble("price");
+                int price= rs.getInt("price");
                 int quantity = rs.getInt("quantity");
                 products.add(new Product(id, name, price,quantity));
             }

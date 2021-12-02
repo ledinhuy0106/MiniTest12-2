@@ -13,7 +13,8 @@
 </head>
 <body>
 <h1>Danh sach</h1>
-<c:forEach items="products" var="product">
+<a href="/products?action=create">Create product</a>
+<c:forEach items="${products}" var="product">
   <h2>${product.id},${product.name},${product.price},${product.quantity}</h2>
 </c:forEach>
 </body>
